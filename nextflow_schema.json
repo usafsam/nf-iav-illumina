@@ -190,6 +190,22 @@
             },
             "fa_icon": "fas fa-retweet"
         },
+        "irma_summary_options": {
+            "title": "IRMA summary options",
+            "type": "object",
+            "description": "IRMA summarization options",
+            "default": "",
+            "properties": {
+                "coverage_depth_threshold": {
+                    "type": "integer",
+                    "default": 25,
+                    "description": "Minimum coverage depth for determining coverage pass/fail.",
+                    "fa_icon": "fas fa-balance-scale-right",
+                    "minimum": 0
+                }
+            },
+            "fa_icon": "fas fa-virus"
+        },
         "h_n_subtyping_options": {
             "title": "H/N subtyping options",
             "type": "object",
@@ -353,6 +369,9 @@
         },
         {
             "$ref": "#/definitions/irma_assembly_options"
+        },
+        {
+            "$ref": "#/definitions/irma_summary_options"
         },
         {
             "$ref": "#/definitions/h_n_subtyping_options"
