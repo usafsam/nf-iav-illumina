@@ -8,7 +8,7 @@ import logging
 import os
 import re
 # from collections import defaultdict
-from dataclasses import asdict, dataclass, fields
+from dataclasses import dataclass, fields
 from functools import partial
 from itertools import repeat
 # from multiprocessing import Pool
