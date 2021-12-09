@@ -16,6 +16,7 @@ ch_influenza_metadata = file(params.ncbi_influenza_metadata)
 include { IRMA } from '../modules/local/irma'
 include { CHECK_SAMPLE_SHEET } from '../modules/local/check_sample_sheet'
 include { SUBTYPING_REPORT } from '../modules/local/subtyping_report'
+include { IRMA_SUMMARY } from './modules/local/irma_summary'
 include { BLAST_MAKEBLASTDB } from '../modules/local/blast_makeblastdb'
 include { BLAST_BLASTN } from '../modules/local/blastn'
 include { CAT_ILLUMINA_FASTQ } from '../modules/local/cat_illumina_fastq'
@@ -95,4 +96,7 @@ workflow ILLUMINA {
   ch_versions = ch_versions.mix(SUBTYPING_REPORT.out.versions)
 
   SOFTWARE_VERSIONS(ch_versions.unique().collectFile(name: 'collated_versions.yml'))
+
+  ch_irma_summary = IRMA.out.irma.collect({ it[1] })
+  IRMA_SUMMARY(ch_irma_summary)
 }
