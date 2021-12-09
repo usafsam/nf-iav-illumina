@@ -201,16 +201,16 @@ def main(irma_results, coverage_depth_threshold):
     os.mkdir("summary_fasta")
     os.chdir("summary_fasta")
     segment_names = df_fasta["Segment"].unique()
-    list(map(partial(os.makedirs), map(lambda x: x.replace("_", "/"), segment_names)))
+    list(map(partial(os.makedirs), map(lambda x: x.replace("_", "/", 1), segment_names)))
     # genera = {x.split("_")[0] for x in segment_names}
     # for genus in genera:
     for segment_name in segment_names:
         segment_records = []
         for _, record in df_fasta[df_fasta["Segment"] == segment_name].iterrows():
             seq_record = SeqRecord(record["Sequence"], id=record["ID"], description="")
-            SeqIO.write(seq_record, f"{segment_name.replace('_', '/')}/{record['ID']}.fasta", "fasta")
+            SeqIO.write(seq_record, f"{segment_name.replace('_', '/', 1)}/{record['ID']}.fasta", "fasta")
             segment_records.append(seq_record)
-        SeqIO.write(segment_records, f"{segment_name.replace('_', '/')}_all.fasta", "fasta")
+        SeqIO.write(segment_records, f"{segment_name.replace('_', '/', 1)}_all.fasta", "fasta")
 
 
 if __name__ == "__main__":
