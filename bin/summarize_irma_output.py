@@ -163,7 +163,7 @@ def parse_irma_ldt_fasta_result(irma_result: str, coverage_depth_threshold: int)
             Segment=segment_name,
             Depth=float((segment_coverage["Coverage Depth"] > coverage_depth_threshold).sum()),
             Sites=len(segment_coverage),
-            Perc_Cover=float((segment_coverage["Coverage Depth"] > coverage_depth_threshold).value_counts(normalize=True)),
+            Perc_Cover=float((segment_coverage["Coverage Depth"] > coverage_depth_threshold).value_counts(normalize=True).get(True, 0)),
             AvgDepth=float(segment_coverage["Coverage Depth"].mean()),
             SDDepth=float(segment_coverage["Coverage Depth"].std(ddof=0))
         )
