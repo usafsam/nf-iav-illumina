@@ -193,10 +193,10 @@ def main(irma_results, coverage_depth_threshold):
     )
 
     df_specimen_stats = pd.concat(map(parse_irma_specimen_stats, irma_results))
-    df_specimen_stats.to_csv("Specimen_Stats.txt", sep="\t")
+    df_specimen_stats.to_csv("Specimen_Stats.txt", sep="\t", index=False)
 
     df_ldt, df_fasta = map(partial(pd.concat, ignore_index=True), zip(*map(parse_irma_ldt_fasta_result, df_specimen_stats[df_specimen_stats["Comment"] == ""]["ID"], repeat(coverage_depth_threshold))))
-    df_ldt.to_csv("Ldt_Summary.txt", sep="\t")
+    df_ldt.to_csv("Ldt_Summary.txt", sep="\t", index=False)
 
     os.mkdir("summary_fasta")
     os.chdir("summary_fasta")
