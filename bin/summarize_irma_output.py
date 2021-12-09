@@ -57,11 +57,11 @@ def parse_irma_specimen_stats(irma_result: str):
             specimen_stats_entry = SpecimenStatsEntry(
                 ID=irma_result,
                 Initials=int(sorted_read_stats["Read Patterns"].sum()),
-                Assembled=pd.NA,
-                WidowsPairs=pd.NA,
-                QCFailed=pd.NA,
-                Chimeric=pd.NA,
-                No_Match=pd.NA,
+                Assembled=0,
+                WidowsPairs=0,
+                QCFailed=0,
+                Chimeric=0,
+                No_Match=0,
                 Comment = "FluReads"
             )
         except FileNotFoundError:
@@ -69,22 +69,22 @@ def parse_irma_specimen_stats(irma_result: str):
                 specimen_stats_entry = SpecimenStatsEntry(
                     ID=irma_result,
                     Initials=0,
-                    Assembled=pd.NA,
-                    WidowsPairs=pd.NA,
-                    QCFailed=pd.NA,
-                    Chimeric=pd.NA,
-                    No_Match=pd.NA,
+                    Assembled=0,
+                    WidowsPairs=0,
+                    QCFailed=0,
+                    Chimeric=0,
+                    No_Match=0,
                     Comment = "NID"
                 )
             else:
                 specimen_stats_entry = SpecimenStatsEntry(
                     ID=irma_result,
                     Initials=0,
-                    Assembled=pd.NA,
-                    WidowsPairs=pd.NA,
-                    QCFailed=pd.NA,
-                    Chimeric=pd.NA,
-                    No_Match=pd.NA,
+                    Assembled=0,
+                    WidowsPairs=0,
+                    QCFailed=0,
+                    Chimeric=0,
+                    No_Match=0,
                     Comment = "NO `tables/READ_COUNTS.txt` OR `sorted_read_stats.txt` OR `R0.fa` WAS FOUND!!!!!"
                 )
     return pd.DataFrame([specimen_stats_entry]).astype({field.name: field.type for field in fields(SpecimenStatsEntry)})
