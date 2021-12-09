@@ -211,3 +211,7 @@ def main(irma_results, coverage_depth_threshold):
             SeqIO.write(seq_record, f"{segment_name.replace('_', '/')}/{record['ID']}.fasta", "fasta")
             segment_records.append(seq_record)
         SeqIO.write(segment_records, f"{segment_name.replace('_', '/')}_all.fasta", "fasta")
+
+
+if __name__ == "__main__":
+    main()
