@@ -59,7 +59,7 @@ def fastq_dir_to_samplesheet(fastq_dir: Path,
                              keep_undetermined: bool = False) -> None:
     sample_name_regex = re.compile(sample_name_regex)
     read_dict = defaultdict(list)
-    for path in fastq_dir.glob("*"):
+    for path in sorted(fastq_dir.glob("*")):
         m = sample_name_regex.match(path.name)
         if m:
             sample = m.group(1)
