@@ -36,9 +36,10 @@ process IRMA {
   fi
 
   IRMA $irma_module $reads $meta.id
-
-  if ls ${meta.id}/amended_consensus/*.fa > /dev/null 2>&1; then
-    cat ${meta.id}/amended_consensus/*.fa > ${meta.id}.irma.consensus.fasta
+  if [ -d "${meta.id}/amended_consensus/" ]; then
+    if compgen -G "${meta.id}/amended_consensus/*.fa" &> /dev/null; then
+      cat ${meta.id}/amended_consensus/*.fa > ${meta.id}.irma.consensus.fasta
+    fi
   fi
   ln -s .command.log $irma_log
   cat <<-END_VERSIONS > versions.yml

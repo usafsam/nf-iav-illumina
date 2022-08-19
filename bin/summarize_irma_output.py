@@ -8,7 +8,7 @@ import logging
 import os
 import re
 # from collections import defaultdict
-from dataclasses import dataclass, fields
+from dataclasses import asdict, dataclass, fields
 from functools import partial
 from itertools import repeat
 # from multiprocessing import Pool
@@ -51,6 +51,13 @@ def parse_irma_specimen_stats(irma_result: str):
             No_Match=read_counts["Reads"].get("3-nomatch"),
             Comment = ""
         )
+        attrs_not_found = list()
+        for (k, v) in asdict(specimen_stats_entry).items():
+            if v is None:
+                attrs_not_found.append(k)
+                setattr(specimen_stats_entry, k, 0)
+        if attrs_not_found:
+            specimen_stats_entry.Comment = f"FIELDS NOT FOUND: {','.join(attrs_not_found)}"
     except FileNotFoundError:
         try:
             sorted_read_stats = pd.read_csv(f"{irma_result}/sorted_read_stats.txt", sep="\t")
