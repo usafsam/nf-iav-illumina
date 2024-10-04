@@ -1,6 +1,7 @@
 process MQC_VERSIONS_TABLE {
-    executor 'local'
-    memory 1.MB
+    // executor 'local'
+    // memory 1.MB
+    label 'process_single'
 
     input:
     path versions

@@ -38,8 +38,9 @@ process CAT_NANOPORE_FASTQ {
 process CAT_DB {
     tag "$fasta1 - $fasta2"
 
-    executor 'local'
-    memory 100.MB
+    // executor 'local'
+    // memory 100.MB
+    label 'process_single'
 
     input:
     path(fasta1)

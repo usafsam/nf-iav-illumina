@@ -58,8 +58,9 @@ process VADR {
 }
 
 process VADR_SUMMARIZE_ISSUES {
-  executor 'local'
-  memory 100.MB
+  // executor 'local'
+  // memory 100.MB
+  label 'process_single'
 
   input:
   path(vadr_output, stageAs: "input*/*")

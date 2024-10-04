@@ -1,8 +1,9 @@
 //Credit https://github.com/nf-core/viralrecon/blob/master/modules/local/multiqc_tsv_from_list.nf
 process MULTIQC_TSV_FROM_LIST {
 
-    executor 'local'
-    memory 100.MB
+    // executor 'local'
+    // memory 100.MB
+    label 'process_single'
 
     input:
     val tsv_data   // [ ['foo', 1], ['bar', 1] ]
