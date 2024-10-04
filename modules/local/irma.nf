@@ -17,8 +17,8 @@ process IRMA {
   tuple val(meta), path("${meta.id}/"), emit: irma
   tuple val(meta), path("${meta.id}.irma.consensus.fasta"), optional: true, emit: consensus
   tuple val(meta), path("${meta.id}.irma.majority_consensus.fasta"), optional: true, emit: majority_consensus
-  path "*.irma.log", emit: log
-  // path "versions.yml", emit: versions
+  // path "*.irma.log", emit: log
+  path "versions.yml", emit: versions
 
   script:
   def irma_config = "DEL_TYPE=\"NNN\"\nALIGN_PROG=\"BLAT\""
