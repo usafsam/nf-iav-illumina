@@ -30,7 +30,7 @@ process IRMA {
   # default tmp in current working directory instead of defaulting to /tmp 
   # which may be restricted in size on HPC clusters
   echo 'ALLOW_TMP=1' >> irma_config.sh
-  echo 'TMP=\$PWD' >> irma_config.sh
+  # echo 'TMP=\$PWD' >> irma_config.sh
   if [ ${params.keep_ref_deletions} ]; then
     echo 'DEL_TYPE="NNN"' >> irma_config.sh
     echo 'ALIGN_PROG="BLAT"' >> irma_config.sh
