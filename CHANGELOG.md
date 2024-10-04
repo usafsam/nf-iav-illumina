@@ -3,6 +3,78 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [[3.4.1](https://github.com/CFIA-NCFAD/nf-flu/releases/tag/3.4.1)] - 2024-08-02
+
+This patch release fixes an issue (#75) with CAT_ILLUMINA_FASTQ where `1:N:0:.` or `2:N:0:.` may be mistakenly appended
+to Q-score lines beginning with `@`.
+
+### Changes
+
+* fix: updated Perl regex to better match Illumina FASTQ header lines starting with `@`. At least one space ` ` is expected in the header line. Match regex has been changed to `/^@.* .*/` from `/^@.*/` so hopefully Q-score lines should not be matched anymore.
+* dev: replaced nf-core/modules `DUMPSOFTWAREVERSIONS` with [mqc_versions_table v0.2.0](https://github.com/CFIA-NCFAD/nim-mqc-versions-yml/releases/tag/0.2.0) Nim statically compiled binary to parse `versions.yml` and output necessary YAML with HTML content for display of process and tool versions table in MultiQC report. In theory `DUMPSOFTWAREVERSIONS` should be using the same Docker/Singularity image/Conda env as the MultiQC process, but `DUMPSOFTWAREVERSIONS` uses an older version of MultiQC and only uses it for the pyyaml library. `mqc_versions_table` was developed to handle this instead with a small 200KB binary instead.
+* dev: harmonize Docker/Singularity containers and Conda envs used across processes.
+* ci: use `symlink` mode for `publishDir` by default for `test_nanopore.config` and `test_illumina.config` to limit disk usage during CI.
+* Updated to Bioconda channel VADR v1.6.4 since the STAPH-B offered container with the flu model packaged is very large at 6GB vs 1.45GB for quay.io/biocontainers/vadr 1.6.4. However, it's now required that the flu model be downloaded and installed prior to VADR annotation with `--vadr_model_targz`. The default model tarball is the `vadr-models-flu-1.6.3-2.tar.gz` (38MB) from the NCBI FTP site uploaded to [Zenodo](https://zenodo.org/records/13261208).
+
+## [[3.4.0](https://github.com/CFIA-NCFAD/nf-flu/releases/tag/3.4.0)] - 2024-07-24
+
+This release adds Influenza virus sequence annotation using VADR.
+
+### Changes
+
+* Add VADR for Influenza consensus sequence annotation
+* Add table2asn for Feature Table conversion to Genbank
+* Add pre- and post-table2asn processing to workaround sequence ID length limits imposed by table2asn when converting from Feature Table format to Genbank
+
+## [[3.3.10](https://github.com/CFIA-NCFAD/nf-flu/releases/tag/3.3.10)] - 2024-05-31
+
+Fix MultiQC report generation due to module filter paths not working like in v1.12.
+
+### Software Updates
+
+* multiqc: `1.21` -> `1.22.1`
+
+### Changes
+
+* test: add `tests/run-nanopore-test.sh` to conveniently run Nanopore test locally
+
+## [[3.3.9](https://github.com/CFIA-NCFAD/nf-flu/releases/tag/3.3.9)] - 2024-05-30
+
+Long overdue software updates release.
+
+### Software Updates
+
+* bcftools: `1.15.1` -> `1.20`
+* blast: `2.14.0` -> `2.15.0`
+* clair3: `1.0.5` -> `1.0.9`
+* minimap2: `2.24` -> `2.28`
+* mosdepth: `0.3.3` -> `0.3.8`
+* multiqc: `1.12` -> `1.21`
+* seqtk: `1.3` -> `1.4`
+
+### Changes
+
+* dev: update GitHub Actions versions for CI and linting workflows
+
+## [[3.3.8](https://github.com/CFIA-NCFAD/nf-flu/releases/tag/3.3.8)] - 2024-02-16
+
+This bugfix patch release fixes an issue where a large number of ambiguous bases in the IRMA consensus can hinder
+reference selection (#67). This release also addresses an issue with using the Clair3 Biocontainers image resulting in
+incomplete variant calling results, affecting nf-flu executions with the `docker` or `singularity` profiles. The
+official Clair3 image is used instead. nf-flu executions using Conda and Mamba are unaffected.
+
+### Changes
+
+* Create majority consensus from IRMA `allAlleles.txt` files for BLASTN search
+* Add `irma-alleles2fasta.v`, statically compiled binary (`irma-alleles2fasta`) and Bash build script for parsing IRMA
+  `allAlleles.txt` to output naive majority consensus (i.e. whatever the top non-dash allele is at each position) so
+  that the sequence used for BLASTN search does not contain any ambiguous bases.
+* Updated nanopore.nf subworkflow to use IRMA majority consensus with no ambiguous bases for BLASTN search so that
+  longer more contiguous matches are possible to aid in top reference sequence selection in some cases.
+* Updated parse_influenza_blast_results.py to better handle extraction of sample name and segment number from BLASTN
+  query accession/version (qaccver).
+* Using official Clair3 Docker image and updating Clair3 to v1.0.5
+
 ## [[3.3.7](https://github.com/CFIA-NCFAD/nf-flu/releases/tag/3.3.7)] - 2024-02-09
 
 This bugfix patch release fixes an issue with mislabeling of PB1 and PB2 segments for Influenza B virus results (#65).

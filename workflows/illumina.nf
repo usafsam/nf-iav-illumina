@@ -10,6 +10,12 @@ ch_influenza_db_fasta = file(params.ncbi_influenza_fasta)
 ch_influenza_metadata = file(params.ncbi_influenza_metadata)
 
 //=============================================================================
+// NCBI VADR Influenza virus model
+//=============================================================================
+
+ch_vadr_model_targz = file(params.vadr_model_targz)
+
+//=============================================================================
 // MODULES
 //=============================================================================
 
@@ -21,8 +27,9 @@ include { BLAST_MAKEBLASTDB } from '../modules/local/blast_makeblastdb'
 include { BLAST_BLASTN } from '../modules/local/blastn'
 include { CAT_ILLUMINA_FASTQ } from '../modules/local/cat_illumina_fastq'
 include { ZSTD_DECOMPRESS as ZSTD_DECOMPRESS_FASTA; ZSTD_DECOMPRESS as ZSTD_DECOMPRESS_CSV } from '../modules/local/zstd_decompress'
-
-include { CUSTOM_DUMPSOFTWAREVERSIONS  as SOFTWARE_VERSIONS   } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { SETUP_FLU_VADR_MODEL; VADR; VADR_SUMMARIZE_ISSUES } from '../modules/local/vadr'
+include { PRE_TABLE2ASN; TABLE2ASN; POST_TABLE2ASN } from '../modules/local/table2asn'
+include { MQC_VERSIONS_TABLE } from '../modules/local/mqc_versions_table'
 
 //=============================================================================
 // Workflow Params Setup
@@ -46,6 +53,7 @@ workflow ILLUMINA {
   ch_versions = ch_versions.mix(ZSTD_DECOMPRESS_CSV.out.versions)
   BLAST_MAKEBLASTDB(ZSTD_DECOMPRESS_FASTA.out.file)
   ch_versions = ch_versions.mix(BLAST_MAKEBLASTDB.out.versions)
+  SETUP_FLU_VADR_MODEL(ch_vadr_model_targz)
 
   CHECK_SAMPLE_SHEET(Channel.fromPath( params.input, checkIfExists: true))
     .splitCsv(header: ['sample', 'fastq1', 'fastq2', 'single_end'], sep: ',', skip: 1)
@@ -84,6 +92,22 @@ workflow ILLUMINA {
   IRMA(CAT_ILLUMINA_FASTQ.out.reads, irma_module)
   ch_versions = ch_versions.mix(IRMA.out.versions.first().ifEmpty(null))
 
+  IRMA.out.consensus
+    .map { [it[0].id, it[1]] }
+    .set { ch_irma_consensus }
+  VADR(ch_irma_consensus, SETUP_FLU_VADR_MODEL.out)
+  ch_versions = ch_versions.mix(VADR.out.versions)
+  VADR.out.feature_table
+    .combine(VADR.out.pass_fasta, by: 0)
+    .set { ch_pre_table2asn }
+  VADR_SUMMARIZE_ISSUES(VADR.out.vadr_outdir.map { [it[1]] }.collect())
+  PRE_TABLE2ASN(ch_pre_table2asn)
+  ch_versions = ch_versions.mix(PRE_TABLE2ASN.out.versions)
+  TABLE2ASN(PRE_TABLE2ASN.out.table2asn_input)
+  ch_versions = ch_versions.mix(TABLE2ASN.out.versions)
+  POST_TABLE2ASN(TABLE2ASN.out.genbank)
+  ch_versions = ch_versions.mix(POST_TABLE2ASN.out.versions)
+
   BLAST_BLASTN(IRMA.out.consensus, BLAST_MAKEBLASTDB.out.db)
   ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions.first().ifEmpty(null))
 
@@ -95,7 +119,7 @@ workflow ILLUMINA {
   )
   ch_versions = ch_versions.mix(SUBTYPING_REPORT.out.versions)
 
-  SOFTWARE_VERSIONS(ch_versions.unique().collectFile(name: 'collated_versions.yml'))
+  MQC_VERSIONS_TABLE(ch_versions.unique().collectFile(name: 'collated_versions.yml'))
 
   ch_irma_summary = IRMA.out.irma.collect({ it[1] })
   IRMA_SUMMARY(ch_irma_summary)
