@@ -21,13 +21,13 @@ process IRMA_SUMMARY {
   path('Ldt_Summary.txt'), emit: ldt_report
   path('Specimen_Stats.txt'), emit: specimen_report
   path('summary_fasta/**'), emit: fastas
-  path('summarize_irma_output.log'), emit: log
+  // path('summarize_irma_output.log'), emit: log
 
   script:
   """
   summarize_irma_output.py \\
     --coverage-depth-threshold $params.coverage_depth_threshold \\
     $irma_results
-  ln -s .command.log summarize_irma_output.log
+  # ln -s .command.log summarize_irma_output.log
   """
 }

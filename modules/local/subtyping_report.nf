@@ -30,7 +30,7 @@ process SUBTYPING_REPORT {
 
   output:
   path('nf-flu-subtyping-report.xlsx'), emit: report
-  path('parse_influenza_blast_results.log'), emit: log
+  // path('parse_influenza_blast_results.log'), emit: log
   path "versions.yml", emit: versions
 
   script:
@@ -43,7 +43,7 @@ process SUBTYPING_REPORT {
    --samplesheet $samplesheet \\
    $blastn_results
 
-  ln -s .command.log parse_influenza_blast_results.log
+  # ln -s .command.log parse_influenza_blast_results.log
 
   cat <<-END_VERSIONS > versions.yml
   "${task.process}":

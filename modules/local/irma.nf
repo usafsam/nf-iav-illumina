@@ -18,7 +18,7 @@ process IRMA {
   tuple val(meta), path("${meta.id}.irma.consensus.fasta"), optional: true, emit: consensus
   tuple val(meta), path("${meta.id}.irma.majority_consensus.fasta"), optional: true, emit: majority_consensus
   path "*.irma.log", emit: log
-  path "versions.yml", emit: versions
+  // path "versions.yml", emit: versions
 
   script:
   def irma_config = "DEL_TYPE=\"NNN\"\nALIGN_PROG=\"BLAT\""
@@ -50,7 +50,7 @@ process IRMA {
     fi
   fi
 
-  ln -s .command.log $irma_log
+  # ln -s .command.log $irma_log
   cat <<-END_VERSIONS > versions.yml
   "${task.process}":
      IRMA: \$(IRMA | head -n1 | sed -E 's/^Iter.*IRMA\\), v(\\S+) .*/\\1/')

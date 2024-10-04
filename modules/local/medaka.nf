@@ -18,7 +18,7 @@ process MEDAKA {
   output:
   tuple val(sample), val(segment), val(id), path(fasta), path(vcf), emit: vcf
   path(medaka_dir), emit: output_dir
-  path(medaka_log), emit: log
+  // path(medaka_log), emit: log
   path "versions.yml", emit: versions
 
   script:
@@ -43,7 +43,7 @@ process MEDAKA {
     ${vcf} \\
     --dpsp
   
-  ln -s .command.log $medaka_log
+  # ln -s .command.log $medaka_log
 
   cat <<-END_VERSIONS > versions.yml
   "${task.process}":

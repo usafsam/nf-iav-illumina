@@ -13,7 +13,7 @@ process BLASTN_REPORT {
 
   output:
   path('*.xlsx'), emit: report
-  path('get_blastn_report.log'), emit: log
+  // path('get_blastn_report.log'), emit: log
   path "versions.yml", emit: versions
 
   script:
@@ -23,7 +23,7 @@ process BLASTN_REPORT {
     --min-aln-length ${params.min_aln_length} \\
     -x ${meta.id}-blastn-report.xlsx
 
-  ln -s .command.log get_blastn_report.log
+  # ln -s .command.log get_blastn_report.log
 
   cat <<-END_VERSIONS > versions.yml
   "${task.process}":

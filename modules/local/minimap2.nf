@@ -17,7 +17,7 @@ process MINIMAP2 {
   output:
   tuple val(sample), val(segment), val(ref_id), path(ref_fasta), path('*.{bam,bam.bai}'), emit: alignment
   path '*.{flagstat,idxstats,stats}', emit: stats
-  path('*.minimap2.log'), emit: log
+  // path('*.minimap2.log'), emit: log
   path "versions.yml" , emit: versions
 
   script:
@@ -43,7 +43,7 @@ process MINIMAP2 {
   samtools flagstat $bam > $flagstat
   samtools idxstats $bam > $idxstats
 
-  ln -s .command.log $minimap2_log
+  # ln -s .command.log $minimap2_log
 
   cat <<-END_VERSIONS > versions.yml
   "${task.process}":
